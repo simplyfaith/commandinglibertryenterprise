@@ -1,6 +1,15 @@
 # Deny direct web access to internal directories
 RewriteEngine On
 
+# Serve the React single-page app for browser routes while keeping API and
+# uploaded-file paths available to PHP and Apache.
+RewriteCond %{REQUEST_URI} !^/api/
+RewriteCond %{REQUEST_URI} !^/storage/
+RewriteCond %{REQUEST_URI} !^/health.php$
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]
+
 <FilesMatch "\.(sql|env|log)$">
     Require all denied
 </FilesMatch>
