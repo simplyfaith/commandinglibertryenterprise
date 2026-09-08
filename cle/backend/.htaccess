@@ -1,0 +1,8 @@
+# Deny direct web access to internal directories
+RewriteEngine On
+
+<FilesMatch "\.(sql|env|log)$">
+    Require all denied
+</FilesMatch>
+
+Options -Indexes
