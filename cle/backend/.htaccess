@@ -1,5 +1,6 @@
 # Deny direct web access to internal directories
 RewriteEngine On
+DirectoryIndex index.html
 
 # Serve the React single-page app for browser routes while keeping API and
 # uploaded-file paths available to PHP and Apache.
