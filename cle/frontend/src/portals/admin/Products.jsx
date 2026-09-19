@@ -26,7 +26,11 @@ export default function Products() {
       setMessage('Product created.');
       e.target.reset();
       load();
-    } catch (err) { setError(err.message); }
+    } catch (err) {
+      const fieldErrors = err.errors
+        ? Object.values(err.errors).flat().join(' ')
+        : '';
+      setError(fieldErrors || err.message || 'Unable to add product.');
   }
 
   function openEdit(product) {
@@ -72,6 +76,11 @@ export default function Products() {
       <div className="portal-header"><h1>Products</h1></div>
 
       <form className="card" style={{ marginBottom: '2rem' }} onSubmit={handleCreate}>
+        {categories.length === 0 && (
+          <p className="error-text">
+            No categories are available. An admin must create a category before a book can be added.
+          </p>
+        )}
         <div className="form-grid">
           <div className="field"><label>SKU</label><input name="sku" required /></div>
           <div className="field"><label>Name</label><input name="name" required /></div>
