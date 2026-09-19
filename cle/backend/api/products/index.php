@@ -68,6 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $body['image_url'] = \ImageUploader::store($_FILES['image'], $config);
         } catch (InvalidArgumentException $e) {
             \Response::error($e->getMessage(), 422);
+        } catch (RuntimeException $e) {
+            error_log('Product image upload failed: ' . $e->getMessage());
+            \Response::error('The server could not save the book image. Please try again.', 500);
         }
     }
     $v = new \Validator($body);

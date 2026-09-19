@@ -35,6 +35,10 @@ class RBAC
 
     public static function hasPermission(array $user, string $permissionKey): bool
     {
+        // Company-wide roles are the system's highest-authority accounts.
+        // Keep that access intact even if a newly provisioned database has
+        // not yet received its role_permissions seed rows.
+        if (self::isCompanyWide($user)) return true;
         return in_array($permissionKey, $user['permissions'], true);
     }
 
