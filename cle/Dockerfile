@@ -16,9 +16,14 @@ RUN npm run build
 
 FROM php:8.3-apache
 
-RUN docker-php-ext-install pdo_mysql \
+# libcurl4-openssl-dev is needed to compile PHP's curl extension, which
+# ImageUploader.php now uses to upload product images to Cloudinary.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libcurl4-openssl-dev \
+    && docker-php-ext-install pdo_mysql curl \
     && a2enmod rewrite \
-    && sed -ri 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
+    && sed -ri 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY backend/ /var/www/html/
 COPY --from=frontend-build /app/frontend/dist/ /var/www/html/

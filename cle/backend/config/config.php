@@ -17,9 +17,15 @@ return [
         'charset'  => 'utf8mb4',
     ],
     'cors_allowed_origins' => array_filter(explode(',', getenv('CORS_ALLOWED_ORIGINS') ?: '')),
+        'cloudinary' => [
+        'cloud_name' => getenv('hrnl85fp') ?: '',
+        'api_key'    => getenv('597429278735225') ?: '',
+        'api_secret' => getenv('av_WGayaGnpOvrpSni8Uq9ydn3Y') ?: '',
+    ],
     'rate_limit' => [
         'window_seconds' => 60,
         'max_requests'   => 120,
+
     ],
     'payment' => [
         'provider' => getenv('PAYMENT_PROVIDER') ?: 'paystack',
