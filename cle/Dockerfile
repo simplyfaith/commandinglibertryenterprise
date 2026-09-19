@@ -1,4 +1,6 @@
-FROM node:20-alpine AS frontend-build
+# Use the Debian Node image for Vite/esbuild. The Alpine build was failing
+# during `npm ci` on Render while installing its platform-specific binary.
+FROM node:20-bookworm-slim AS frontend-build
 
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
