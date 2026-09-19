@@ -27,6 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $body['image_url'] = \ImageUploader::store($_FILES['image'], $config);
         } catch (InvalidArgumentException $e) {
             \Response::error($e->getMessage(), 422);
+        } catch (RuntimeException $e) {
+            error_log('Hero slider upload failed: ' . $e->getMessage());
+            \Response::error('The server could not save the image. Please try again.', 500);
         }
     }
     $body['title'] = $body['title'] ?? 'Promotional Banner';
