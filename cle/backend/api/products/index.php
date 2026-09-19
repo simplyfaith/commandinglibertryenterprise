@@ -83,6 +83,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($v->fails()) \Response::error('Validation failed', 422, $v->errors());
 
     $isPreorder = ($body['status'] ?? '') === 'PREORDER' ? 1 : 0;
+    // HTML form controls submit an empty string when no date is chosen.
+    // MySQL accepts NULL for an optional date, but rejects an empty string.
+    $preorderExpectedDate = $isPreorder && !empty($body['preorder_expected_date'])
+        ? $body['preorder_expected_date']
+        : null;
+    $preorderQuantityLimit = $isPreorder && ($body['preorder_quantity_limit'] ?? '') !== ''
+        ? (int)$body['preorder_quantity_limit']
+        : null;
     $discountPercent = ($body['discount_percent'] ?? '') === '' ? null : (float)$body['discount_percent'];
     if ($discountPercent !== null && $discountPercent > 100) {
         \Response::error('Discount percentage cannot exceed 100', 422);
@@ -103,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $body['description'] ?? null, $body['author'] ?? null, $body['publisher'] ?? null, $body['isbn'] ?? null,
         $body['image_url'] ?? null, $body['cost_price'] ?? 0, $body['selling_price'],
         $discountPrice, $body['status'] ?? 'AVAILABLE', $isPreorder,
-        $body['preorder_expected_date'] ?? null, $body['preorder_quantity_limit'] ?? null,
+        $preorderExpectedDate, $preorderQuantityLimit,
         $body['reorder_level'] ?? 5, $user['id'],
     ]);
     $newId = (int)$pdo->lastInsertId();

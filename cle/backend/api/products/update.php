@@ -11,6 +11,13 @@ if ($user['role_name'] === 'STAFF') {
 }
 
 $body = $_POST ?: requestBody();
+// Optional SQL DATE fields must be NULL, not an empty string from a form.
+if (array_key_exists('preorder_expected_date', $body) && $body['preorder_expected_date'] === '') {
+    $body['preorder_expected_date'] = null;
+}
+if (array_key_exists('preorder_quantity_limit', $body) && $body['preorder_quantity_limit'] === '') {
+    $body['preorder_quantity_limit'] = null;
+}
 if (isset($_FILES['image'])) {
     try {
         $body['image_url'] = ImageUploader::store($_FILES['image'], $config);
