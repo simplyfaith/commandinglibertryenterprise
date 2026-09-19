@@ -5,7 +5,13 @@ FROM node:20-bookworm-slim AS frontend-build
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
-COPY frontend/ ./
+# Copy only application sources. The repository contains Windows node_modules;
+# copying them here would replace the Linux dependencies installed above and
+# makes Vite/esbuild fail during Render's build.
+COPY frontend/index.html ./
+COPY frontend/vite.config.js ./
+COPY frontend/src ./src
+COPY frontend/public ./public
 RUN npm run build
 
 FROM php:8.3-apache

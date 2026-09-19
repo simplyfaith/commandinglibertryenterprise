@@ -31,6 +31,7 @@ export default function Products() {
         ? Object.values(err.errors).flat().join(' ')
         : '';
       setError(fieldErrors || err.message || 'Unable to add product.');
+    }
   }
 
   function openEdit(product) {
